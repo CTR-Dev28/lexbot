@@ -1318,6 +1318,76 @@
             console.log('📋  Paste contract text and click "Analyze Contract" to get started.');
             console.log('💡  Tip: Use Ctrl+Enter to trigger analysis from the textarea.');
         })();
-    </script>
+    <script>
+    const API_KEY = 'sk-6474622f7dea4685b29a987a8b14f586'; // Your working key from the Terminal test
+
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const contractInput = document.getElementById('contractText');
+    const resultsDiv = document.getElementById('results');
+    const loadingDiv = document.getElementById('loading');
+    const errorDiv = document.getElementById('error');
+
+    analyzeBtn.addEventListener('click', async () => {
+        const contractText = contractInput.value.trim();
+        if (!contractText) {
+            errorDiv.textContent = 'Please paste a contract or clause first.';
+            errorDiv.style.display = 'block';
+            return;
+        }
+
+        // Show loading, hide previous results
+        loadingDiv.style.display = 'block';
+        resultsDiv.innerHTML = '';
+        errorDiv.style.display = 'none';
+
+        // The system prompt that tells the AI what to do
+        const systemPrompt = `You are LexBot, an AI legal document analyst. Review the provided contract text or clause and return a structured analysis with EXACTLY these three sections labeled SUMMARY, RISKS, and NEGOTIATION POINTS. Use these instructions for each section:
+1.  **SUMMARY:** Explain what this clause means in plain English (2-3 sentences).
+2.  **RISKS:** Flag any potential risks you identify (one-sided terms, overbroad restrictions, missing protections, or vague language).
+3.  **NEGOTIATION POINTS:** Suggest what to ask for in a negotiation to make this fairer.
+**IMPORTANT:** Do NOT provide legal advice or jurisdiction-specific opinions. Use accessible, plain English. Format your response exactly as requested, using the exact headings SUMMARY, RISKS, and NEGOTIATION POINTS.`;
+
+        try {
+            const response = await fetch('/api/deepseek', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${API_KEY}`
+                },
+                body: JSON.stringify({
+                    model: 'deepseek-chat',
+                    messages: [
+                        { role: 'system', content: systemPrompt },
+                        { role: 'user', content: contractText }
+                    ],
+                    temperature: 0.7,
+                    max_tokens: 2048
+                })
+            });
+
+            if (!response.ok) {
+                const errData = await response.json();
+                throw new Error(errData.error?.message || 'API request failed');
+            }
+
+            const data = await response.json();
+            const analysis = data.choices[0].message.content;
+
+            // Format the analysis for display
+            let formatted = analysis
+                .replace(/SUMMARY:/gi, '<h4>🔍 Summary</h4>')
+                .replace(/RISKS:/gi, '<h4>⚠️ Risks</h4>')
+                .replace(/NEGOTIATION POINTS:/gi, '<h4>💡 Negotiation Points</h4>')
+                .replace(/\n/g, '<br>');
+
+            resultsDiv.innerHTML = formatted;
+            loadingDiv.style.display = 'none';
+        } catch (err) {
+            loadingDiv.style.display = 'none';
+            errorDiv.textContent = '⚠️ Analysis failed: ' + err.message;
+            errorDiv.style.display = 'block';
+        }
+    });
+</script>
 </body>
 </html>
