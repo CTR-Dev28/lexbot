@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="title" content="LexBot — AI Contract Reviewer">
+    <meta name="description" content="Understand any contract in seconds with AI-powered analysis. LexBot summarizes key clauses, flags risks, and suggests negotiation points for founders, freelancers, and small law firms.">
+    <meta name="keywords" content="contract review, AI contract analyzer, legal AI, NDA review, contract summary, risk analysis, negotiation points">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="LexBot — AI Contract Reviewer">
+    <meta property="og:description" content="Understand any contract in seconds with AI-powered analysis. Summaries, risk flags, and negotiation suggestions.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="LexBot — AI Contract Reviewer">
+    <meta name="twitter:description" content="Understand any contract in seconds with AI-powered analysis.">
+    <title>LexBot — AI Contract Reviewer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0f1a;
+            --bg-secondary: #0d1322;
+            --bg-card: rgba(255, 255, 255, 0.04);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-medium: rgba(255, 255, 255, 0.12);
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent-indigo: #6366f1;
+            --accent-indigo-hover: #5558e6;
+            --accent-indigo-glow: rgba(99, 102, 241, 0.35);
+            --accent-gold: #f59e0b;
+            --accent-gold-glow: rgba(245, 158, 11, 0.3);
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --radius-sm: 10px;
+            --radius-md: 14px;
+            --radius-lg: 18px;
+            --radius-xl: 22px;
+            --shadow-glow-indigo: 0 0 28px rgba(99, 102, 241, 0.18);
+            --shadow-glow-gold: 0 0 22px rgba(245, 158, 11, 0.14);
+            --shadow-card: 0 2px 16px rgba(0, 0, 0, 0.3);
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --transition-fast: 0.18s ease;
+            --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: var(--bg-primary);
+            background-image:
+                radial-gradient(ellipse at 50% 0%, rgba(99, 102, 241, 0.07) 0%, transparent 60%),
+                radial-gradient(ellipse at 30% 40%, rgba(99, 102, 241, 0.03) 0%, transparent 55%),
+                radial-gradient(ellipse at 70% 70%, rgba(245, 158, 11, 0.03) 0%, transparent 55%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+
+        /* ── Navigation ────────────────────── */
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(10, 15, 26, 0.78);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-bottom: 1px solid var(--border-subtle);
+            transition: var(--transition-smooth);
+            padding: 0 24px;
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+
+        .nav-logo {
+            font-size: 1.55rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            text-decoration: none;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .nav-logo .accent {
+            color: var(--accent-indigo);
+            font-weight: 800;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color var(--transition-fast);
+            position: relative;
+            letter-spacing: -0.01em;
+        }
+
+        .nav-links a:hover,
+        .nav-links a:focus-visible {
+            color: var(--text-primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-indigo);
+            border-radius: 2px;
+            transition: width var(--transition-smooth);
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a:focus-visible::after {
+            width: 100%;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 6px;
+            z-index: 1001;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 26px;
+            height: 2.5px;
+            background: var(--text-primary);
+            border-radius: 3px;
+            transition: var(--transition-smooth);
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: translateY(7.5px) rotate(45deg);
+        }
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+            transform: scaleX(0);
+        }
+        .hamburger.active span:nth-child(3) {
+            transform: translateY(-7.5px) rotate(-45deg);
+        }
+
+        .mobile-menu {
+            display: none;
+            position: absolute;
+            top: 64px;
+            left: 0;
+            right: 0;
+            background: rgba(13, 19, 34, 0.96);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-subtle);
+            flex-direction: column;
+            padding: 16px 24px 20px;
+            gap: 8px;
+            transform: translateY(-12px);
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition-smooth);
+        }
+
+        .mobile-menu.open {
+            display: flex;
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .mobile-menu a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 1.05rem;
+            font-weight: 500;
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            transition: var(--transition-fast);
+        }
+
+        .mobile-menu a:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        /* ── Sections ──────────────────────── */
+        .section {
+            padding: 80px 24px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            display: inline-block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--accent-indigo);
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: 2.4rem;
+            font-weight: 300;
+            letter-spacing: -0.03em;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 620px;
+            line-height: 1.6;
+        }
+
+        /* ── Hero ──────────────────────────── */
+        .hero {
+            text-align: center;
+            padding: 90px 24px 60px;
+        }
+
+        .hero .container {
+            max-width: 800px;
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            font-weight: 300;
+            letter-spacing: -0.04em;
+            line-height: 1.15;
+            color: var(--text-primary);
+            margin-bottom: 18px;
+        }
+
+        .hero h1 .highlight {
+            color: var(--accent-indigo);
+            font-weight: 500;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            line-height: 1.65;
+            margin-bottom: 32px;
+            max-width: 640px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 13px 28px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all var(--transition-smooth);
+            letter-spacing: -0.01em;
+            font-family: var(--font-family);
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: var(--accent-indigo);
+            color: #fff;
+            box-shadow: 0 4px 20px var(--accent-indigo-glow);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-indigo-hover);
+            box-shadow: 0 6px 28px rgba(99, 102, 241, 0.45);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1.5px solid var(--border-medium);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--accent-indigo);
+            background: rgba(99, 102, 241, 0.06);
+            box-shadow: 0 4px 18px rgba(99, 102, 241, 0.12);
+        }
+
+        .btn-gold {
+            background: var(--accent-gold);
+            color: #0a0f1a;
+            font-weight: 700;
+            box-shadow: 0 4px 20px var(--accent-gold-glow);
+        }
+
+        .btn-gold:hover {
+            box-shadow: 0 6px 30px rgba(245, 158, 11, 0.45);
+            transform: translateY(-1px);
+            filter: brightness(1.08);
+        }
+
+        .btn-sm {
+            padding: 9px 20px;
+            font-size: 0.85rem;
+            border-radius: 40px;
+        }
+
+        /* ── Cards (frosted glass) ────────── */
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 28px 24px;
+            box-shadow: var(--shadow-card);
+            transition: all var(--transition-smooth);
+        }
+
+        .card:hover {
+            border-color: var(--border-medium);
+            box-shadow: var(--shadow-card), 0 0 32px rgba(99, 102, 241, 0.07);
+            transform: translateY(-2px);
+        }
+
+        .card-highlight {
+            border-color: var(--accent-indigo);
+            box-shadow: var(--shadow-card), 0 0 36px rgba(99, 102, 241, 0.2);
+            position: relative;
+            background: rgba(99, 102, 241, 0.06);
+        }
+
+        .card-highlight::before {
+            content: 'Most Popular';
+            position: absolute;
+            top: -13px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent-indigo);
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 5px 16px;
+            border-radius: 20px;
+            letter-spacing: 0.03em;
+            white-space: nowrap;
+        }
+
+        .card-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin-bottom: 16px;
+            background: rgba(99, 102, 241, 0.12);
+            color: var(--accent-indigo);
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.55;
+        }
+
+        /* ── Grid layouts ──────────────────── */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        /* ── Demo Section ──────────────────── */
+        .demo-section {
+            padding-top: 20px;
+            padding-bottom: 70px;
+        }
+
+        .demo-card {
+            display: flex;
+            flex-direction: column;
+            min-height: 440px;
+        }
+
+        .demo-card label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 10px;
+        }
+
+        .demo-card textarea {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            padding: 16px;
+            font-family: 'Inter', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            resize: vertical;
+            min-height: 260px;
+            transition: border-color var(--transition-fast);
+            letter-spacing: -0.01em;
+        }
+
+        .demo-card textarea:focus {
+            outline: none;
+            border-color: var(--accent-indigo);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
+        }
+
+        .demo-card textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .output-area {
+            flex: 1;
+            min-height: 260px;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            overflow-y: auto;
+            line-height: 1.6;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            transition: all var(--transition-smooth);
+        }
+
+        .output-area .placeholder-text {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-muted);
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .output-area .summary-heading {
+            color: var(--accent-gold);
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: -0.01em;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .output-area .section-block {
+            margin-bottom: 18px;
+            animation: fadeInUp 0.4s ease forwards;
+        }
+        .output-area .section-block:nth-child(2) {
+            animation-delay: 0.08s;
+        }
+        .output-area .section-block:nth-child(3) {
+            animation-delay: 0.16s;
+        }
+
+        .output-area .section-block h4 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+        }
+
+        .output-area .section-block ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .output-area .section-block ul li {
+            padding: 4px 0 4px 20px;
+            position: relative;
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            line-height: 1.55;
+        }
+
+        .output-area .section-block ul li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 10px;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--accent-gold);
+        }
+
+        .output-area .section-block.risks-block ul li::before {
+            background: var(--accent-red);
+        }
+        .output-area .section-block.negotiation-block ul li::before {
+            background: var(--accent-green);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ── Spinner ───────────────────────── */
+        .spinner-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            height: 100%;
+            min-height: 200px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--accent-indigo);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .spinner-text {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            letter-spacing: -0.01em;
+        }
+
+        /* ── Error / Retry ────────────────── */
+        .error-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            text-align: center;
+            min-height: 200px;
+            color: var(--accent-red);
+        }
+
+        .error-block p {
+            font-size: 0.9rem;
+        }
+
+        .inline-error {
+            color: var(--accent-red);
+            font-size: 0.8rem;
+            margin-top: 6px;
+            display: none;
+        }
+        .inline-error.visible {
+            display: block;
+            animation: fadeInUp 0.25s ease;
+        }
+
+        /* ── Pricing ───────────────────────── */
+        .pricing-card {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 32px 20px;
+        }
+
+        .pricing-card .price {
+            font-size: 2.8rem;
+            font-weight: 300;
+            letter-spacing: -0.03em;
+            color: var(--text-primary);
+        }
+
+        .pricing-card .price span {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .pricing-card .plan-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: -0.01em;
+        }
+
+        .pricing-card ul {
+            list-style: none;
+            padding: 0;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 2;
+            flex: 1;
+        }
+
+        .pricing-card ul li::before {
+            content: '✓ ';
+            color: var(--accent-green);
+            font-weight: 700;
+        }
+
+        /* ── Footer ────────────────────────── */
+        .footer {
+            border-top: 1px solid var(--border-subtle);
+            padding: 32px 24px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .footer .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .footer .social-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+            font-size: 1.1rem;
+        }
+
+        .footer .social-links a:hover {
+            color: var(--accent-indigo);
+        }
+
+        .footer .disclaimer {
+            font-style: italic;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        /* ── Responsive ────────────────────── */
+        @media (max-width: 900px) {
+            .grid-3 {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            .grid-2 {
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            .hero p {
+                font-size: 1rem;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+            .demo-card {
+                min-height: auto;
+            }
+            .demo-card textarea {
+                min-height: 200px;
+            }
+            .output-area {
+                min-height: 200px;
+            }
+            .section {
+                padding: 50px 16px;
+            }
+            .hero {
+                padding: 60px 16px 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            .hamburger {
+                display: flex;
+            }
+            .mobile-menu {
+                display: none;
+            }
+            .mobile-menu.open {
+                display: flex;
+            }
+            .hero h1 {
+                font-size: 1.9rem;
+            }
+            .hero p {
+                font-size: 0.95rem;
+            }
+            .section-title {
+                font-size: 1.55rem;
+            }
+            .card {
+                padding: 20px 16px;
+            }
+            .pricing-card .price {
+                font-size: 2.2rem;
+            }
+            .btn {
+                padding: 11px 22px;
+                font-size: 0.88rem;
+            }
+            .nav-inner {
+                height: 56px;
+            }
+            .mobile-menu {
+                top: 56px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .hero h1 {
+                font-size: 1.55rem;
+            }
+            .section-title {
+                font-size: 1.35rem;
+            }
+            .btn {
+                padding: 10px 18px;
+                font-size: 0.82rem;
+                border-radius: 40px;
+            }
+            .card-highlight::before {
+                font-size: 0.7rem;
+                padding: 4px 12px;
+                top: -11px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═══════════════ NAVIGATION ═══════════════ -->
+    <nav class="nav" id="navbar">
+        <div class="nav-inner">
+            <a href="#" class="nav-logo">Lex<span class="accent">Bot</span></a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#demo">Demo</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+            </ul>
+            <button class="hamburger" id="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="#home">Home</a>
+            <a href="#demo">Demo</a>
+            <a href="#features">Features</a>
+            <a href="#pricing">Pricing</a>
+        </div>
+    </nav>
+
+    <!-- ═══════════════ HERO ═══════════════ -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h1>Understand <span class="highlight">Any Contract</span> in Seconds</h1>
+            <p>
+                Paste a contract, NDA, or terms of service — LexBot summarizes key clauses,
+                flags risks, and suggests negotiation points. Built for founders, freelancers,
+                and small law firms.
+            </p>
+            <a href="#demo" class="btn btn-primary">
+                Try the Demo Below
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </a>
+        </div>
+    </section>
+
+    <!-- ═══════════════ DEMO ═══════════════ -->
+    <section class="section demo-section" id="demo">
+        <div class="container">
+            <span class="section-label">Interactive Demo</span>
+            <h2 class="section-title">See LexBot in Action</h2>
+            <p class="section-subtitle" style="margin-bottom:28px;">
+                Paste any legal text below and let our AI analyze it instantly.
+            </p>
+            <div class="grid-2">
+                <!-- Input Card -->
+                <div class="card demo-card" id="inputCard">
+                    <label for="contractText">📄 Contract Text</label>
+                    <textarea
+                    id="contractText"
+                    placeholder="Paste any legal text here..."
+                >Non-Compete Agreement: The Employee agrees that for a period of two (2) years following the termination of employment, regardless of the reason for termination, the Employee shall not directly or indirectly engage in any business that is competitive with the Company within a 150-mile radius of any Company office or facility. The Employee further agrees not to solicit any Company clients, customers, or employees for the duration of this non-compete period. The Employee acknowledges that the Company has the right to seek injunctive relief and damages in the event of any breach. All disputes shall be resolved through binding arbitration in the State of Delaware, and the Employee waives the right to participate in any class action.</textarea>
+                    <p class="inline-error" id="inlineError">⚠️ Please paste some contract text before analyzing.</p>
+                    <button class="btn btn-primary" id="analyzeBtn" style="margin-top:14px; align-self:flex-start;">
+                        ⚖️ Analyze Contract
+                    </button>
+                </div>
+
+                <!-- Output Card -->
+                <div class="card demo-card" id="outputCard">
+                    <label for="outputArea">📋 Analysis Results</label>
+                    <div class="output-area" id="outputArea">
+                        <div class="placeholder-text" id="placeholderOutput">
+                            Your analysis will appear here...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════ HOW IT WORKS ═══════════════ -->
+    <section class="section" id="how-it-works">
+        <div class="container">
+            <span class="section-label">How It Works</span>
+            <h2 class="section-title">Simple, Fast, Effective</h2>
+            <p class="section-subtitle" style="margin-bottom:32px;">
+                Three steps to better contract understanding.
+            </p>
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-icon">📋</div>
+                    <h3>1. Paste a Clause</h3>
+                    <p>Drop any contract text into the analyzer — NDAs, service agreements, non-competes, and more.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🤖</div>
+                    <h3>2. AI Reviews It</h3>
+                    <p>DeepSeek AI flags risks and summarizes complex legalese in plain English you can actually understand.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">💡</div>
+                    <h3>3. Negotiate Better</h3>
+                    <p>Get actionable suggestions for your next draft — know exactly what to push back on.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════ FEATURES ═══════════════ -->
+    <section class="section" id="features" style="background: rgba(255,255,255,0.01);">
+        <div class="container">
+            <span class="section-label">Features</span>
+            <h2 class="section-title">Built for Real-World Contracts</h2>
+            <p class="section-subtitle" style="margin-bottom:32px;">
+                Everything you need to review contracts with confidence.
+            </p>
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-icon">📝</div>
+                    <h3>Plain-English Summaries</h3>
+                    <p>Complex clauses distilled into 2–3 clear sentences. No jargon, no confusion.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🚩</div>
+                    <h3>Risk Flagging</h3>
+                    <p>One-sided terms, overbroad restrictions, and missing protections highlighted instantly.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🤝</div>
+                    <h3>Negotiation Points</h3>
+                    <p>Fairer alternatives suggested for every flagged issue — ready for your next conversation.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════ PRICING ═══════════════ -->
+    <section class="section" id="pricing">
+        <div class="container">
+            <span class="section-label">Pricing</span>
+            <h2 class="section-title">Plans for Every Need</h2>
+            <p class="section-subtitle" style="margin-bottom:32px;">
+                From occasional reviews to enterprise-scale contract analysis.
+            </p>
+            <div class="grid-3">
+                <!-- Starter -->
+                <div class="card pricing-card">
+                    <p class="plan-name">Starter</p>
+                    <p class="price">$49<span>/mo</span></p>
+                    <ul>
+                        <li>20 reviews / month</li>
+                        <li>Basic summaries</li>
+                        <li>Email support</li>
+                    </ul>
+                    <a href="#" class="btn btn-outline btn-sm">Get Started</a>
+                </div>
+                <!-- Pro (Featured) -->
+                <div class="card pricing-card card-highlight">
+                    <p class="plan-name" style="color:var(--accent-indigo);">Pro</p>
+                    <p class="price">$99<span>/mo</span></p>
+                    <ul>
+                        <li>100 reviews / month</li>
+                        <li>Detailed risk analysis</li>
+                        <li>Negotiation suggestions</li>
+                        <li>PDF export</li>
+                        <li>Priority support</li>
+                    </ul>
+                    <a href="#" class="btn btn-primary btn-sm">Get Started</a>
+                </div>
+                <!-- Enterprise -->
+                <div class="card pricing-card">
+                    <p class="plan-name">Enterprise</p>
+                    <p class="price">$199<span>/mo</span></p>
+                    <ul>
+                        <li>Unlimited reviews</li>
+                        <li>White-label option</li>
+                        <li>API access</li>
+                        <li>Dedicated support</li>
+                    </ul>
+                    <a href="#" class="btn btn-outline btn-sm">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════ FOOTER ═══════════════ -->
+    <footer class="footer">
+        <div class="social-links">
+            <a href="#" aria-label="Twitter / X">𝕏</a>
+            <a href="#" aria-label="LinkedIn">🔗</a>
+            <a href="#" aria-label="GitHub">🐙</a>
+            <a href="#" aria-label="Email">✉️</a>
+        </div>
+        <p>© 2024 LexBot. All rights reserved.</p>
+        <p class="disclaimer">⚠️ Not a substitute for legal advice. Always consult a qualified attorney for important legal matters.</p>
+    </footer>
+
+    <!-- ═══════════════ SCRIPTS ═══════════════ -->
+    <script>
+        (function() {
+            // ── DOM References ──────────────────
+            const hamburger = document.getElementById('hamburger');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const navLinks = document.getElementById('navLinks');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const contractText = document.getElementById('contractText');
+            const outputArea = document.getElementById('outputArea');
+            const placeholderOutput = document.getElementById('placeholderOutput');
+            const inlineError = document.getElementById('inlineError');
+            const inputCard = document.getElementById('inputCard');
+            const outputCard = document.getElementById('outputCard');
+
+            let isAnalyzing = false;
+            let lastAnalysis = null;
+
+            // ── API Configuration ──────────────
+            const API_KEY = 'sk-6474b22f7dea4685b29a987a8b14f506';
+            const API_ENDPOINT = '/api/deepseek';
+            const MODEL = 'deepseek-chat';
+
+            const SYSTEM_PROMPT =
+                'You are LexBot, an AI legal document analyst. Review the provided contract text and return a structured analysis in exactly three sections: SUMMARY (2-3 plain-English sentences), RISKS (bullet points flagging one-sided terms, overbroad restrictions, missing protections), NEGOTIATION POINTS (bullet points suggesting fairer terms). Important: Do NOT provide legal advice. Use plain English.';
+
+            // ── Hamburger Menu ─────────────────
+            function toggleMenu() {
+                const isOpen = mobileMenu.classList.contains('open');
+                if (isOpen) {
+                    mobileMenu.classList.remove('open');
+                    hamburger.classList.remove('active');
+                    hamburger.setAttribute('aria-expanded', 'false');
+                } else {
+                    mobileMenu.classList.add('open');
+                    hamburger.classList.add('active');
+                    hamburger.setAttribute('aria-expanded', 'true');
+                }
+            }
+
+            hamburger.addEventListener('click', toggleMenu);
+
+            // Close mobile menu when a link is clicked
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.remove('open');
+                    hamburger.classList.remove('active');
+                    hamburger.setAttribute('aria-expanded', 'false');
+                });
+            });
+
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) {
+                    mobileMenu.classList.remove('open');
+                    hamburger.classList.remove('active');
+                    hamburger.setAttribute('aria-expanded', 'false');
+                }
+            });
+
+            // Close on Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+                    mobileMenu.classList.remove('open');
+                    hamburger.classList.remove('active');
+                    hamburger.setAttribute('aria-expanded', 'false');
+                }
+            });
+
+            // ── Scroll shadow for nav ──────────
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 10) {
+                    navbar.style.boxShadow = '0 2px 20px rgba(0,0,0,0.35)';
+                } else {
+                    navbar.style.boxShadow = 'none';
+                }
+            });
+
+            // ── Analysis Function ──────────────
+            function showLoading() {
+                outputArea.innerHTML = `
+                    <div class="spinner-container">
+                        <div class="spinner"></div>
+                        <span class="spinner-text">Analyzing contract…</span>
+                    </div>
+                `;
+                inlineError.classList.remove('visible');
+            }
+
+            function showError(message, retryCallback) {
+                outputArea.innerHTML = `
+                    <div class="error-block">
+                        <p>⚠️ ${message}</p>
+                        ${retryCallback ? '<button class="btn btn-outline btn-sm" id="retryBtn">🔄 Retry</button>' : ''}
+                    </div>
+                `;
+                if (retryCallback) {
+                    const retryBtn = document.getElementById('retryBtn');
+                    if (retryBtn) {
+                        retryBtn.addEventListener('click', retryCallback);
+                    }
+                }
+            }
+
+            function parseAnalysisSections(content) {
+                const summaryMatch = content.match(
+                    /(?:SUMMARY|Summary)[\s:]*\n?([\s\S]*?)(?=(?:RISKS|Risks)[\s:]*\n|$)/i);
+                const risksMatch = content.match(
+                    /(?:RISKS|Risks)[\s:]*\n?([\s\S]*?)(?=(?:NEGOTIATION\s*POINTS|Negotiation\s*Points|NEGOTIATION)[\s:]*\n|$)/i
+                    );
+                const negotiationMatch = content.match(
+                    /(?:NEGOTIATION\s*POINTS|Negotiation\s*Points|NEGOTIATION)[\s:]*\n?([\s\S]*?)$/i);
+
+                let summary = summaryMatch ? summaryMatch[1].trim() : '';
+                let risks = risksMatch ? risksMatch[1].trim() : '';
+                let negotiation = negotiationMatch ? negotiationMatch[1].trim() : '';
+
+                // If parsing failed, try splitting by double newlines as fallback
+                if (!summary && !risks && !negotiation) {
+                    const parts = content.split(/\n\n+/);
+                    if (parts.length >= 3) {
+                        summary = parts[0].replace(/^(?:SUMMARY|Summary)[\s:]*/i, '').trim();
+                        risks = parts[1].replace(/^(?:RISKS|Risks)[\s:]*/i, '').trim();
+                        negotiation = parts.slice(2).join('\n\n').replace(
+                            /^(?:NEGOTIATION\s*POINTS|Negotiation\s*Points|NEGOTIATION)[\s:]*/i, '').trim();
+                    } else {
+                        // Last resort: use the entire content as summary
+                        summary = content.trim();
+                    }
+                }
+
+                return { summary, risks, negotiation };
+            }
+
+            function parseBulletPoints(text) {
+                if (!text || !text.trim()) return [];
+                const lines = text.split(/\n/).filter(line => line.trim());
+                return lines.map(line => line.replace(/^[\s]*[-•*–—]\s*/, '').replace(/^[\s]*\d+[.)]\s*/, '')
+                    .trim()).filter(line => line.length > 0);
+            }
+
+            function renderResults(summary, risks, negotiation) {
+                const riskItems = parseBulletPoints(risks);
+                const negotiationItems = parseBulletPoints(negotiation);
+
+                let html = '';
+
+                // Summary section
+                html += `
+                    <div class="section-block">
+                        <p class="summary-heading">⭐ Summary</p>
+                        <p style="color:var(--text-secondary);font-size:0.9rem;line-height:1.6;">${escapeHTML(summary || 'No summary available.')}</p>
+                    </div>
+                `;
+
+                // Risks section
+                html += '<div class="section-block risks-block">';
+                html += '<h4>🚩 Risks Identified</h4>';
+                if (riskItems.length > 0) {
+                    html += '<ul>';
+                    riskItems.forEach(item => {
+                        html += `<li>${escapeHTML(item)}</li>`;
+                    });
+                    html += '</ul>';
+                } else {
+                    html +=
+                        '<p style="color:var(--text-muted);font-size:0.85rem;">No specific risks identified.</p>';
+                }
+                html += '</div>';
+
+                // Negotiation Points section
+                html += '<div class="section-block negotiation-block">';
+                html += '<h4>🤝 Negotiation Points</h4>';
+                if (negotiationItems.length > 0) {
+                    html += '<ul>';
+                    negotiationItems.forEach(item => {
+                        html += `<li>${escapeHTML(item)}</li>`;
+                    });
+                    html += '</ul>';
+                } else {
+                    html +=
+                        '<p style="color:var(--text-muted);font-size:0.85rem;">No specific negotiation points available.</p>';
+                }
+                html += '</div>';
+
+                outputArea.innerHTML = html;
+                outputArea.scrollTop = 0;
+            }
+
+            function escapeHTML(str) {
+                const div = document.createElement('div');
+                div.textContent = str;
+                return div.innerHTML;
+            }
+
+            async function runAnalysis(textToAnalyze) {
+                if (isAnalyzing) return;
+                isAnalyzing = true;
+                analyzeBtn.disabled = true;
+                analyzeBtn.textContent = '⏳ Analyzing…';
+                inlineError.classList.remove('visible');
+                showLoading();
+
+                try {
+                    const response = await fetch(API_ENDPOINT, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${API_KEY}`,
+                        },
+                        body: JSON.stringify({
+                            model: MODEL,
+                            messages: [
+                                { role: 'system', content: SYSTEM_PROMPT },
+                                { role: 'user', content: 'Please review this contract text:\n\n' + textToAnalyze },
+                            ],
+                            temperature: 0.3,
+                            max_tokens: 2000,
+                        }),
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        const errorMsg = errorData.error?.message ||
+                            `API request failed with status ${response.status}`;
+                        throw new Error(errorMsg);
+                    }
+
+                    const data = await response.json();
+                    const content = data.choices?.[0]?.message?.content;
+
+                    if (!content) {
+                        throw new Error('No analysis content received from the API.');
+                    }
+
+                    const { summary, risks, negotiation } = parseAnalysisSections(content);
+                    lastAnalysis = { summary, risks, negotiation, rawContent: content };
+                    renderResults(summary, risks, negotiation);
+
+                } catch (err) {
+                    console.error('LexBot analysis error:', err);
+                    const errorMessage = err.message || 'An unexpected error occurred.';
+                    showError(
+                        `Analysis failed: ${escapeHTML(errorMessage)}`,
+                        () => runAnalysis(textToAnalyze)
+                    );
+                } finally {
+                    isAnalyzing = false;
+                    analyzeBtn.disabled = false;
+                    analyzeBtn.textContent = '⚖️ Analyze Contract';
+                }
+            }
+
+            // ── Analyze Button Handler ──────────
+            analyzeBtn.addEventListener('click', () => {
+                const text = contractText.value.trim();
+                if (!text) {
+                    inlineError.classList.add('visible');
+                    inlineError.textContent = '⚠️ Please paste some contract text before analyzing.';
+                    outputArea.innerHTML =
+                        '<div class="placeholder-text">Your analysis will appear here...</div>';
+                    return;
+                }
+                if (text.length < 30) {
+                    inlineError.classList.add('visible');
+                    inlineError.textContent =
+                        '⚠️ Please provide more substantial contract text (at least 30 characters) for a meaningful analysis.';
+                    return;
+                }
+                inlineError.classList.remove('visible');
+                runAnalysis(text);
+            });
+
+            // ── Keyboard shortcut: Ctrl+Enter to analyze ──
+            contractText.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                    e.preventDefault();
+                    analyzeBtn.click();
+                }
+            });
+
+            // ── Clear inline error on typing ───
+            contractText.addEventListener('input', () => {
+                if (inlineError.classList.contains('visible')) {
+                    inlineError.classList.remove('visible');
+                }
+            });
+
+            // ── Smooth scroll for anchor links ──
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    const target = document.querySelector(targetId);
+                    if (target) {
+                        e.preventDefault();
+                        const navHeight = navbar.offsetHeight;
+                        const targetPosition = target.getBoundingClientRect().top + window.pageYOffset -
+                            navHeight - 16;
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth',
+                        });
+                    }
+                });
+            });
+
+            console.log('⚖️  LexBot — AI Contract Reviewer is ready.');
+            console.log('📋  Paste contract text and click "Analyze Contract" to get started.');
+            console.log('💡  Tip: Use Ctrl+Enter to trigger analysis from the textarea.');
+        })();
+    </script>
+</body>
+</html>
