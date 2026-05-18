@@ -1008,7 +1008,7 @@
 
     <!-- ═══════════════ SCRIPTS ═══════════════ -->
     <script>
-    const API_KEY = '{{env.DEEPSEEK_API_KEY}}';
+    
     const analyzeBtn = document.getElementById('analyzeBtn');
     const contractText = document.getElementById('contractText');
     const outputArea = document.getElementById('outputArea');
@@ -1029,22 +1029,20 @@
         const systemPrompt = `You are LexBot, an AI legal document analyst. Review the provided contract text or clause and return a structured analysis with EXACTLY these three sections: SUMMARY, RISKS, and NEGOTIATION POINTS. 1. SUMMARY: Explain what this clause means in plain English (2-3 sentences). 2. RISKS: Flag any potential risks (one-sided terms, overbroad restrictions, missing protections, vague language). 3. NEGOTIATION POINTS: Suggest what to ask for in a negotiation to make this fairer. IMPORTANT: Do NOT provide legal advice or jurisdiction-specific opinions. Use plain English. Format using the exact headings SUMMARY, RISKS, and NEGOTIATION POINTS.`;
 
         try {
-            const response = await fetch('/api/deepseek', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${API_KEY}`
-                },
-                body: JSON.stringify({
-                    model: 'deepseek-chat',
-                    messages: [
-                        { role: 'system', content: systemPrompt },
-                        { role: 'user', content: text }
-                    ],
-                    temperature: 0.7,
-                    max_tokens: 2048
-                })
-            });
+            const response = await fetch('/.netlify/functions/deepseek-proxy', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    messages: [
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: text }
+    ],
+    temperature: 0.7,
+    max_tokens: 2048
+  })
+});
 
             if (!response.ok) {
                 const errData = await response.json();
